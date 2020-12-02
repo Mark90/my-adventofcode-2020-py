@@ -16,7 +16,6 @@ def part1(lines):
 
 def part2(lines):
     pass
-
 """
 
 main_py = """\
@@ -29,7 +28,6 @@ with (Path(__file__).parent / "input.txt").open() as f:
 
 part1(_lines)
 part2(_lines)
-
 """
 
 
