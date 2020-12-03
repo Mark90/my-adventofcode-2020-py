@@ -11,7 +11,7 @@ YEAR = 2020
 
 solution_py = """\
 def part1(lines):
-    pass
+    # LINE SEPARATORS ARE STILL ATTACHED!
 
 
 def part2(lines):
