@@ -9,25 +9,27 @@ import requests
 
 YEAR = 2020
 
-solution_py = """\
-def part1(lines):
-    # LINE SEPARATORS ARE STILL ATTACHED!
+solution_py = r"""
+def part1(lines, full):
+    return
 
 
-def part2(lines):
-    pass
+def part2(lines, full):
+    return
 """
 
-main_py = """\
-from pathlib import Path
+main_py = r"""from pathlib import Path
 
 from .solution import part1, part2
 
 with (Path(__file__).parent / "input.txt").open() as f:
-    _lines = f.readlines()
+    _full = f.read()
 
-part1(_lines)
-part2(_lines)
+_lines = _full.splitlines()
+if p1 := part1(_lines, _full):
+    print(f"[part1] Result: {p1}")
+if p2 := part2(_lines, _full):
+    print(f"[part1] Result: {p2}")
 """
 
 
