@@ -29,7 +29,7 @@ _lines = _full.splitlines()
 if p1 := part1(_lines, _full):
     print(f"[part1] Result: {p1}")
 if p2 := part2(_lines, _full):
-    print(f"[part1] Result: {p2}")
+    print(f"[part2] Result: {p2}")
 """
 
 
