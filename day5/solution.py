@@ -11,17 +11,14 @@ def part1(lines, full):
 
 
 def part2(lines, full):
-    sids = []
+    minsid, maxsid, sidsum = 10 ** 10, 0, 0
     for line in lines:
         bpass = (
             line.replace("B", "1").replace("F", "0").replace("R", "1").replace("L", "0")
         )
         row, col = int(bpass[:-3], 2), int(bpass[-3:], 2)
         sid = (row * 8) + col
-        sids.append(sid)
-    sids.sort()
-    prev = sids[0]
-    for cur in sids[1:]:
-        if cur > prev + 1:
-            return cur - 1
-        prev = cur
+        minsid = min(minsid, sid)
+        maxsid = max(maxsid, sid)
+        sidsum += sid
+    return ((maxsid * (maxsid + 1)) // 2) - sidsum - (((minsid - 1) * (minsid)) // 2)
