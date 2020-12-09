@@ -8,6 +8,7 @@ name = "pypi"
 [dev-packages]
 beautifulsoup4 = "*"
 requests = "*"
+rope = "*"
 
 [requires]
 python_version = "3.8"
