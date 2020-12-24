@@ -3,82 +3,62 @@ import re
 from collections import defaultdict, Counter
 
 
-def part1(lines, full):
-    # 375
-    w = h = 1000
-    # g = list(True for _ in range(h * w))
-    g = {}
-    rgx = re.compile("(e|se|sw|w|nw|ne)")
+rgx = re.compile("(e|se|sw|w|nw|ne)")
+
+
+def make_grid(lines, width):
+    grid = {}
     for line in lines:
-        coord = 500 * 500  # just somewhere in the middle
+        coord = (width // 2) * (width // 2)  # refence tile in the middle
         for d in rgx.findall(line):
             if d == "e":
                 coord += 2
             if d == "se":
-                coord += w + 1
+                coord += width + 1
             if d == "sw":
-                coord += w - 1
+                coord += width - 1
             if d == "w":
                 coord -= 2
             if d == "nw":
-                coord -= w + 1
+                coord -= width + 1
             if d == "ne":
-                coord -= w - 1
-        g.setdefault(coord, True)
-        g[coord] ^= True
-    return sum(1 for v in g.values() if v == False)
-    # return (w * h) - sum(g)
+                coord -= width - 1
+        grid.setdefault(coord, True)
+        grid[coord] ^= True
+    return grid
+
+
+def part1(lines, full):
+    # 375
+    width = height = 1000
+    grid = make_grid(lines, width)
+    return sum(1 for v in grid.values() if v == False)
 
 
 def part2(lines, full, days=100):
     # 3937
-    w = h = 1000
-    # g = list(True for _ in range(h * w))
-    g = {}
-    rgx = re.compile("(e|se|sw|w|nw|ne)")
-    for line in lines:
-        coord = 500 * 500  # just somewhere in the middle
-        for d in rgx.findall(line):
-            if d == "e":
-                coord += 2
-            if d == "se":
-                coord += w + 1
-            if d == "sw":
-                coord += w - 1
-            if d == "w":
-                coord -= 2
-            if d == "nw":
-                coord -= w + 1
-            if d == "ne":
-                coord -= w - 1
-        g.setdefault(coord, True)
-        g[coord] ^= True
-
-    # print(f"Day 0: {(w * h) - sum(g)}")
-    print(f"Day 0: {sum(1 for v in g.values() if v==False)}")
-    for day in range(days):
-        gnew = g.copy()
-        # for coord in range(w, (w*h) - w):
-        for coord in range(0, (w * h) + 1):
-            # if (coord%w) <= 2 or (w- (coord%w)) <= 2: continue
-            vals = sum(
-                g.get(x, True)
-                for x in (
-                    coord + 2,  # e
-                    coord + (w + 1),  # se
-                    coord + (w - 1),  # sw
-                    coord - 2,  # w
-                    coord - (w + 1),  # nw
-                    coord - (w - 1),  # ne
-                )
+    # Determine the required gridsize based on input
+    longest_instruction = max(len(rgx.findall(line)) for line in lines)
+    longest_path = (days + longest_instruction) * 2
+    width = height = longest_path * 2  # Path could go left or right
+    grid = make_grid(lines, width)
+    for _ in range(days):
+        next_grid = grid.copy()
+        # Could probably improve further by keeping track of the lowest
+        # and highest coordinate, but eh.
+        for coord in range(width, (width * height) + 1 - width):
+            adjacent_white = (
+                grid.get(coord + 2, 1)  # East
+                + grid.get(coord + (width + 1), 1)  # Southeast
+                + grid.get(coord + (width - 1), 1)  # Southwest
+                + grid.get(coord - 2, 1)  # West
+                + grid.get(coord - (width + 1), 1)  # Northwest
+                + grid.get(coord - (width - 1), 1)  # Northeast
             )
-            # True -> white, False -> black
-            g.setdefault(coord, True)
-            if g[coord] and vals == 4:
-                gnew[coord] = False
-            if not g[coord] and vals != 4 and vals != 5:
-                gnew[coord] = True
-        g = gnew
-        # print(f"Day {day+1}: {(w * h) - sum(g)}")
-        print(f"Day {day+1}: {sum(1 for v in g.values() if v==False)}")
-    return sum(1 for v in g.values() if v == False)
+            if grid.setdefault(coord, True):
+                if adjacent_white == 4:
+                    next_grid[coord] = False  # white to black
+            elif adjacent_white != 4 and adjacent_white != 5:
+                next_grid[coord] = True  # black to white
+        grid = next_grid
+    return sum(1 for v in grid.values() if v == False)
